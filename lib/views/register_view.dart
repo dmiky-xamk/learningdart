@@ -71,7 +71,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Register")),
+        appBar: AppBar(title: const Text("Sign up")),
         body: Column(
           children: [
             TextField(
@@ -89,10 +89,10 @@ class _RegisterViewState extends State<RegisterView> {
               controller: _password,
             ),
             TextButton(
-                onPressed: () => registerUser(), child: const Text("Register")),
+                onPressed: () => registerUser(), child: const Text("Sign up")),
             TextButton(
                 onPressed: navToLoginView,
-                child: const Text("Already have an account? Login."))
+                child: const Text("Already have an account? Sign in."))
           ],
         ));
   }

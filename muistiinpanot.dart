@@ -212,3 +212,7 @@ For example, a revision may be released to QA (quality control), and they come b
 // * Anonymous route on kun näkymä pusketaan aiemman näkymän päälle
 // * Named route on kun aiempi näkymä korvataan toisella näkymällä
 // * ja named routesta kerrotaan Flutterille etukäteen jotain
+
+// ! Print vs Log
+// * Printillä tulostetut asiat jäävät puhelimeen muistiin
+// * Importataan devtools jonka log funktiota voidaan käyttää printin sijasta

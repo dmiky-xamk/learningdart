@@ -56,7 +56,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Sign in")),
       body: Column(
         children: [
           TextField(
@@ -73,7 +73,8 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             controller: _password,
           ),
-          TextButton(onPressed: () => loginUser(), child: const Text("Login")),
+          TextButton(
+              onPressed: () => loginUser(), child: const Text("Sign in")),
           TextButton(
               onPressed: navToRegisterView,
               child: const Text("Don't have an account yet? Sign up."))

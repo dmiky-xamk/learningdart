@@ -1,8 +1,8 @@
+import 'package:learningdart/utilities/show_error_dialog.dart';
+import 'package:learningdart/constants/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
-import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/views/verify_email_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -35,37 +35,63 @@ class _RegisterViewState extends State<RegisterView> {
     super.dispose();
   }
 
+  void handleRegisterException(String error) async {
+    switch (error) {
+      case "weak-password":
+        await showErrorDialog(
+          context,
+          "Try a stronger password",
+        );
+        break;
+      case "email-already-in-use":
+        await showErrorDialog(
+          context,
+          "Email is already in use",
+        );
+        break;
+      case "invalid-email":
+        await showErrorDialog(
+          context,
+          "Please enter a valid email",
+        );
+        break;
+      default:
+        await showErrorDialog(
+          context,
+          "Error: $error",
+        );
+        break;
+    }
+  }
+
   void registerUser() async {
     final email = _email.text;
     final password = _password.text;
 
     try {
-      final userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      devtools.log(userCredential.toString());
+      // * Lähetetään varmistusta varten sähköposti
+      final user = FirebaseAuth.instance.currentUser;
+      await user?.sendEmailVerification();
+
+      // * Navigoidaan sähköpostin varmistus näkymään
+      Navigator.of(context).pushNamed(verifyEmailRoute);
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "weak-password":
-          devtools.log("Salasana on liian heikko");
-          break;
-        case "email-already-in-use":
-          devtools.log("Email is already in use");
-          break;
-        case "invalid-email":
-          devtools.log("Sähköposti ei kelpaa");
-          break;
-        default:
-          devtools.log("Jokin virhe tapahtui");
-          break;
-      }
+      handleRegisterException(e.code);
     } catch (e) {
-      devtools.log("ERROR: ${e.toString()}");
+      handleRegisterException(e.toString());
     }
   }
 
   void navToLoginView() {
-    Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      loginRoute,
+      (_) => false,
+    );
   }
 
   @override

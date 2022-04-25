@@ -39,13 +39,22 @@ class _LoginViewState extends State<LoginView> {
   void handleLoginException(String error) async {
     switch (error) {
       case "user-not-found":
-        await showErrorDialog(context, "User not found");
+        await showErrorDialog(
+          context,
+          "User not found",
+        );
         break;
       case "wrong-password":
-        await showErrorDialog(context, "Wrong credentials");
+        await showErrorDialog(
+          context,
+          "Wrong credentials",
+        );
         break;
       case "invalid-email":
-        await showErrorDialog(context, "Please enter a valid email");
+        await showErrorDialog(
+          context,
+          "Please enter a valid email",
+        );
         break;
       default:
         await showErrorDialog(

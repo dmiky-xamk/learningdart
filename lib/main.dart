@@ -81,7 +81,7 @@ enum MenuAction { logout }
 void handleMenuAction(action, context) async {
   switch (action) {
     case MenuAction.logout:
-      final shouldSignOut = await showLogOutDialog(context);
+      final shouldSignOut = await showSignOutDialog(context);
 
       if (shouldSignOut) {
         await FirebaseAuth.instance.signOut();
@@ -120,7 +120,7 @@ class _NotesViewState extends State<NotesView> {
   }
 }
 
-Future<bool> showLogOutDialog(BuildContext context) {
+Future<bool> showSignOutDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,
     builder: (context) {

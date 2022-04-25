@@ -1,8 +1,8 @@
+import 'package:learningdart/constants/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
 
-import 'package:learningdart/constants/routes.dart';
+import '../utilities/show_error_dialog.dart';
 
 // * Kirjautumisnäkymä
 class LoginView extends StatefulWidget {
@@ -36,6 +36,25 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  void handleLoginException(String error) async {
+    switch (error) {
+      case "user-not-found":
+        await showErrorDialog(context, "User not found");
+        break;
+      case "wrong-password":
+        await showErrorDialog(context, "Wrong credentials");
+        break;
+      case "invalid-email":
+        await showErrorDialog(context, "Please enter a valid email");
+        break;
+      default:
+        await showErrorDialog(
+          context,
+          "Error: $error",
+        );
+    }
+  }
+
   void loginUser() async {
     final email = _email.text;
     final password = _password.text;
@@ -51,9 +70,9 @@ class _LoginViewState extends State<LoginView> {
         (_) => false,
       );
     } on FirebaseAuthException catch (e) {
-      devtools.log(e.code);
+      handleLoginException(e.code);
     } catch (e) {
-      devtools.log("ERROR TYPE: ${e.runtimeType.toString()}");
+      handleLoginException(e.toString());
     }
   }
 

@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../firebase_options.dart';
 
 // * Kirjautumisnäkymä
 class LoginView extends StatefulWidget {
@@ -51,42 +49,36 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  void navToRegisterView() {
+    Navigator.of(context).pushNamedAndRemoveUntil("/register/", (_) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Login")),
-      body: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
+      body: Column(
+        children: [
+          TextField(
+            decoration: const InputDecoration(hintText: "Email"),
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: _email,
           ),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return Column(
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(hintText: "Email"),
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _email,
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(hintText: "Password"),
-                      obscureText: true,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      controller: _password,
-                    ),
-                    TextButton(
-                        onPressed: () => loginUser(),
-                        child: const Text("Login")),
-                  ],
-                );
-              default:
-                return const Text("Loading...");
-            }
-          }),
+          TextField(
+            decoration: const InputDecoration(hintText: "Password"),
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            controller: _password,
+          ),
+          TextButton(onPressed: () => loginUser(), child: const Text("Login")),
+          TextButton(
+              onPressed: navToRegisterView,
+              child: const Text("Don't have an account yet? Sign up."))
+        ],
+      ),
     );
   }
 }

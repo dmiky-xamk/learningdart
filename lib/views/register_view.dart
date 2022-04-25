@@ -64,42 +64,36 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
+  void navToLoginView() {
+    Navigator.of(context).pushNamedAndRemoveUntil("/login/", (_) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
-      body: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return Column(
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(hintText: "Email"),
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _email,
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(hintText: "Password"),
-                      obscureText: true,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      controller: _password,
-                    ),
-                    TextButton(
-                        onPressed: () => registerUser(),
-                        child: const Text("Register")),
-                  ],
-                );
-              default:
-                return const Text("Loading...");
-            }
-          }),
-    );
+        appBar: AppBar(title: const Text("Register")),
+        body: Column(
+          children: [
+            TextField(
+              decoration: const InputDecoration(hintText: "Email"),
+              autocorrect: false,
+              enableSuggestions: false,
+              keyboardType: TextInputType.emailAddress,
+              controller: _email,
+            ),
+            TextField(
+              decoration: const InputDecoration(hintText: "Password"),
+              obscureText: true,
+              autocorrect: false,
+              enableSuggestions: false,
+              controller: _password,
+            ),
+            TextButton(
+                onPressed: () => registerUser(), child: const Text("Register")),
+            TextButton(
+                onPressed: navToLoginView,
+                child: const Text("Already have an account? Login."))
+          ],
+        ));
   }
 }

@@ -206,3 +206,9 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // ! Scaffold
 // * Pitää sisällään applikaation
+
+// ! Named routes vs anonymous routes
+// * Route on matka joka alkaa näkymästä ja päättyy näkymään
+// * Anonymous route on kun näkymä pusketaan aiemman näkymän päälle
+// * Named route on kun aiempi näkymä korvataan toisella näkymällä
+// * ja named routesta kerrotaan Flutterille etukäteen jotain

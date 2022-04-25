@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 // * Kirjautumisnäkymä
 class LoginView extends StatefulWidget {
@@ -38,19 +39,27 @@ class _LoginViewState extends State<LoginView> {
     final password = _password.text;
 
     try {
-      final userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      print("CREDENTIALS $userCredential");
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        "/notes/",
+        (_) => false,
+      );
     } on FirebaseAuthException catch (e) {
-      print(e.code);
+      devtools.log(e.code);
     } catch (e) {
-      print("ERROR TYPE: ${e.runtimeType}");
+      devtools.log("ERROR TYPE: ${e.runtimeType.toString()}");
     }
   }
 
   void navToRegisterView() {
-    Navigator.of(context).pushNamedAndRemoveUntil("/register/", (_) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      "/register/",
+      (_) => false,
+    );
   }
 
   @override

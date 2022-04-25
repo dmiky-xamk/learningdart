@@ -209,10 +209,19 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // ! Named routes vs anonymous routes
 // * Route on matka joka alkaa näkymästä ja päättyy näkymään
-// * Anonymous route on kun näkymä pusketaan aiemman näkymän päälle
-// * Named route on kun aiempi näkymä korvataan toisella näkymällä
-// * ja named routesta kerrotaan Flutterille etukäteen jotain
+// * Anonymous route on kun uusi widget pusketaan aiemman näkymän päälle
+// * Named routesta kerrotaan Flutterille main funktiossa, ja se pusketaan aiemman näkymän päälle
+// /login/, /register/ ...
 
 // ! Print vs Log
 // * Printillä tulostetut asiat jäävät puhelimeen muistiin
 // * Importataan devtools jonka log funktiota voidaan käyttää printin sijasta
+
+// ! Pushing
+// * Sanan käyttö nousi suosiossa iOS ja Androidin takia v. 2007
+// * Laitteella näkymästä toiseen siirtyessä uusi näkymä "pushataan" vanhan päälle
+
+// ! pushNamedAndRemoveUntil
+// * Pusketaan nimetty näkymä aiemman näkymän päälle ja poistetaan kaikki sitä edeltävät näkymät
+// * Esim. onnistuneen kirjautumisen jälkeen ei ole tarvetta pitää kirjautumisnäkymää enää uuden näkymän alapuolella
+// * Toisen argumentin ollessa false poistetaan kaikki aiemmat näkymät

@@ -1,8 +1,6 @@
-// * Rekisteröintinäkymä
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../firebase_options.dart';
+import 'dart:developer' as devtools show log;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -43,24 +41,24 @@ class _RegisterViewState extends State<RegisterView> {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      print("CREDENTIALS $userCredential");
+      devtools.log(userCredential.toString());
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "weak-password":
-          print("Salasana on liian heikko");
+          devtools.log("Salasana on liian heikko");
           break;
         case "email-already-in-use":
-          print("Email is already in use");
+          devtools.log("Email is already in use");
           break;
         case "invalid-email":
-          print("Sähköposti ei kelpaa");
+          devtools.log("Sähköposti ei kelpaa");
           break;
         default:
-          print("Jokin virhe tapahtui");
+          devtools.log("Jokin virhe tapahtui");
           break;
       }
     } catch (e) {
-      print("ERROR: $e");
+      devtools.log("ERROR: ${e.toString()}");
     }
   }
 

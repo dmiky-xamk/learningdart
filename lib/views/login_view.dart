@@ -74,10 +74,21 @@ class _LoginViewState extends State<LoginView> {
         password: password,
       );
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        notesRoute,
-        (_) => false,
-      );
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user?.emailVerified ?? false) {
+        // * Email is verified
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          notesRoute,
+          (_) => false,
+        );
+      } else {
+        // * Email is not verified
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          verifyEmailRoute,
+          (_) => false,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       handleLoginException(e.code);
     } catch (e) {
@@ -112,8 +123,7 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             controller: _password,
           ),
-          TextButton(
-              onPressed: () => loginUser(), child: const Text("Sign in")),
+          TextButton(onPressed: loginUser, child: const Text("Sign in")),
           TextButton(
               onPressed: navToRegisterView,
               child: const Text("Don't have an account yet? Sign up."))

@@ -225,3 +225,6 @@ For example, a revision may be released to QA (quality control), and they come b
 // * Pusketaan nimetty näkymä aiemman näkymän päälle ja poistetaan kaikki sitä edeltävät näkymät
 // * Esim. onnistuneen kirjautumisen jälkeen ei ole tarvetta pitää kirjautumisnäkymää enää uuden näkymän alapuolella
 // * Toisen argumentin ollessa false poistetaan kaikki aiemmat näkymät
+
+// ! Immutable
+// * Tarkoittaa että luomisen jälkeen classin tai sen lapsien sisältö ei muutu

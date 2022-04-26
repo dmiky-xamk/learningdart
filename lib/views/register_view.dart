@@ -114,8 +114,7 @@ class _RegisterViewState extends State<RegisterView> {
               enableSuggestions: false,
               controller: _password,
             ),
-            TextButton(
-                onPressed: () => registerUser(), child: const Text("Sign up")),
+            TextButton(onPressed: registerUser, child: const Text("Sign up")),
             TextButton(
                 onPressed: navToLoginView,
                 child: const Text("Already have an account? Sign in."))

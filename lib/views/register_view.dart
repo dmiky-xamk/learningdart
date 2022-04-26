@@ -1,8 +1,8 @@
 import 'package:learningdart/utilities/show_error_dialog.dart';
 import 'package:learningdart/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:learningdart/views/verify_email_view.dart';
+import 'package:learningdart/views/services/auth/auth_exceptions.dart';
+import 'package:learningdart/views/services/auth/auth_service.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -35,33 +35,8 @@ class _RegisterViewState extends State<RegisterView> {
     super.dispose();
   }
 
-  void handleRegisterException(String error) async {
-    switch (error) {
-      case "weak-password":
-        await showErrorDialog(
-          context,
-          "Try a stronger password",
-        );
-        break;
-      case "email-already-in-use":
-        await showErrorDialog(
-          context,
-          "Email is already in use",
-        );
-        break;
-      case "invalid-email":
-        await showErrorDialog(
-          context,
-          "Please enter a valid email",
-        );
-        break;
-      default:
-        await showErrorDialog(
-          context,
-          "Error: $error",
-        );
-        break;
-    }
+  void showErrorDialogWrapper(String errorMessage) async {
+    await showErrorDialog(context, errorMessage);
   }
 
   void registerUser() async {
@@ -69,21 +44,26 @@ class _RegisterViewState extends State<RegisterView> {
     final password = _password.text;
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await AuthService.firebase().signUp(
         email: email,
         password: password,
       );
 
       // * Lähetetään varmistusta varten sähköposti
-      final user = FirebaseAuth.instance.currentUser;
-      await user?.sendEmailVerification();
+      await AuthService.firebase().sendEmailVerification();
 
       // * Navigoidaan sähköpostin varmistus näkymään
       Navigator.of(context).pushNamed(verifyEmailRoute);
-    } on FirebaseAuthException catch (e) {
-      handleRegisterException(e.code);
+    } on WeakPasswordAuthException {
+      showErrorDialogWrapper("Try a stronger password");
+    } on EmailAlreadyInUseAuthException {
+      showErrorDialogWrapper("Email is already in use");
+    } on InvalidEmailAuthException {
+      showErrorDialogWrapper("Please enter a valid email");
+    } on GenericAuthException {
+      showErrorDialogWrapper("Failed to register");
     } catch (e) {
-      handleRegisterException(e.toString());
+      showErrorDialogWrapper("Tuntematon virhe: ${e.toString()}");
     }
   }
 

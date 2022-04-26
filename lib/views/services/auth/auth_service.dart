@@ -1,3 +1,5 @@
+import 'package:learningdart/views/services/auth/firebase_auth_provider.dart';
+
 import 'auth_provider.dart';
 import 'auth_user.dart';
 
@@ -10,6 +12,10 @@ class AuthService implements AuthProvider {
   final AuthProvider provider;
 
   const AuthService(this.provider);
+
+  // * Luodaan factory constructor joka palauttaa aina saman(?) instancen
+  // * sillä firebasea joutuu käyttämään useammassa tiedostossa
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
 
   @override
   AuthUser? get currentUser => provider.currentUser;
@@ -39,4 +45,7 @@ class AuthService implements AuthProvider {
         email: email,
         password: password,
       );
+
+  @override
+  Future<void> initialize() => provider.initialize();
 }

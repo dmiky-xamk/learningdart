@@ -1,6 +1,7 @@
 import 'package:learningdart/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/views/services/auth/auth_exceptions.dart';
+import 'package:learningdart/views/services/auth/auth_service.dart';
 
 import '../utilities/show_error_dialog.dart';
 
@@ -36,32 +37,11 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  void handleLoginException(String error) async {
-    switch (error) {
-      case "user-not-found":
-        await showErrorDialog(
-          context,
-          "User not found",
-        );
-        break;
-      case "wrong-password":
-        await showErrorDialog(
-          context,
-          "Wrong credentials",
-        );
-        break;
-      case "invalid-email":
-        await showErrorDialog(
-          context,
-          "Please enter a valid email",
-        );
-        break;
-      default:
-        await showErrorDialog(
-          context,
-          "Error: $error",
-        );
-    }
+  void showErrorDialogWrapper(String errorMessage) async {
+    await showErrorDialog(
+      context,
+      errorMessage,
+    );
   }
 
   void loginUser() async {
@@ -69,14 +49,14 @@ class _LoginViewState extends State<LoginView> {
     final password = _password.text;
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await AuthService.firebase().signIn(
         email: email,
         password: password,
       );
 
-      final user = FirebaseAuth.instance.currentUser;
+      final user = AuthService.firebase().currentUser;
 
-      if (user?.emailVerified ?? false) {
+      if (user?.isEmailVerified ?? false) {
         // * Email is verified
         Navigator.of(context).pushNamedAndRemoveUntil(
           notesRoute,
@@ -89,10 +69,14 @@ class _LoginViewState extends State<LoginView> {
           (_) => false,
         );
       }
-    } on FirebaseAuthException catch (e) {
-      handleLoginException(e.code);
+    } on UserNotFoundAuthException {
+      showErrorDialogWrapper("User not found");
+    } on WrongPasswordAuthException {
+      showErrorDialogWrapper("Wrong credentials");
+    } on GenericAuthException {
+      showErrorDialogWrapper("Authentication error");
     } catch (e) {
-      handleLoginException(e.toString());
+      showErrorDialogWrapper("Tuntematon virhe: ${e.toString()}");
     }
   }
 

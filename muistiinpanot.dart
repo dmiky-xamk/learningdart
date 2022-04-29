@@ -246,3 +246,28 @@ For example, a revision may be released to QA (quality control), and they come b
 // * Testauksessa luodaan esim. testattavasta luokasta kopio, joka ei ole riippuvainen ulkoisista tekijöistä.
 // * Testaus voisi epäonnistua esim. palvelimen virheen takia, joihin meillä ei ole vaikutusvaltaa,
 // * joten testissä palvelin korvataan omalla datalla.
+
+// ! CRUD Local Storage
+// * Create Read Update Delete
+// * Neljä perimmäistä toimenpidettä jota datalle voidaan tehdä
+
+// ! SQLite
+// * Database-engine (Django ja Flask käyttää tätä(?))
+// Mietitään SQLiteä erilissinä komponentteina:
+// - Database: Tiedosto joka on levyllä
+// - SQLEngine: Pystyy lukemaan ja kirjoittamaan Databaseen
+// SQLEngine tarvitsee ympäristön suorittamista varten. 
+
+// ! Databases
+// * Tietokannoissa Tableilla on niitä yksilöivä "id" tai "primary key"
+// * Yksilöivä avain on yleensä tyyppiä INTEGER
+// * Primary key on Tablen itse hallittava tunnistetieto
+// user { id: 5 }
+
+// * Foreign key on toisessa Tablessa sijaitseva tunnistetieto
+// * joka linkkaa tämän ja toisen tablen yhteen
+// FOREIGN KEY("user_id") REFERENCES "user"("id")
+
+// ! Path provider
+// * Mobiililaitteilla sovelluksilla on oma "Documents" -kansio
+// * jonka path tarvitaan tietokanta tiedoston tallentamiseen sinne.

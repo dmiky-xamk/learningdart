@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:learningdart/views/services/auth/auth_exceptions.dart';
 import 'package:learningdart/views/services/auth/auth_provider.dart';
 import 'package:learningdart/views/services/auth/auth_user.dart';
 import 'package:test/test.dart';
-import 'package:mocktail/mocktail.dart';
 
 void main() {
   group("Mock Authentication", () {
@@ -98,8 +95,6 @@ void main() {
 }
 
 class NotInitializedException implements Exception {}
-
-class CMockAuthProvider extends Mock implements AuthProvider {}
 
 class MockAuthProvider implements AuthProvider {
   // * Luo automaattisesti "null"

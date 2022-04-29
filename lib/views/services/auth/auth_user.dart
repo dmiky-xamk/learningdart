@@ -7,8 +7,10 @@ import 'package:flutter/cupertino.dart';
 class AuthUser {
   final bool isEmailVerified;
 
-  const AuthUser(this.isEmailVerified);
+  // ? Jotta constructoria käytettäessä on annettava nimi -> selkeämpi koodi
+  const AuthUser({required this.isEmailVerified});
 
   // * Annetaan meidän classille Firebase user -> luodaan siitä AuthUser joka ottaa email.verified propertyn itselleen
-  factory AuthUser.fromFirebase(User user) => AuthUser(user.emailVerified);
+  factory AuthUser.fromFirebase(User user) =>
+      AuthUser(isEmailVerified: user.emailVerified);
 }

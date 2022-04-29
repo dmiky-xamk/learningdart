@@ -228,3 +228,21 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // ! Immutable
 // * Tarkoittaa että luomisen jälkeen classin tai sen lapsien sisältö ei muutu
+
+// ! Tests
+// * Kolme erityyppistä testiä jota voit tehdä Flutterissa:
+// Unit tests: Unit voi olla jokin erillinen koodinpätkä tai luokka
+// Testataan esim. että AuthService -luokka toimii oikein ja suorittaa kaikki sillä tarkotetut toimenpiteet onnistuneesti
+
+// Widget tests: Sovelluksen UI toimivuutta varmistavia testejä
+// Esim. Käyttäjän kirjautuessa kirjautumis painike muuttuu disabled
+
+// Integration tests: Testataan koko sovelluksen toimimista käyttäjän näkökulmasta
+
+// * KOMENTO:
+// flutter test test/auth_test.dart
+
+// ! Mocking
+// * Testauksessa luodaan esim. testattavasta luokasta kopio, joka ei ole riippuvainen ulkoisista tekijöistä.
+// * Testaus voisi epäonnistua esim. palvelimen virheen takia, joihin meillä ei ole vaikutusvaltaa,
+// * joten testissä palvelin korvataan omalla datalla.

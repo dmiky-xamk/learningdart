@@ -270,4 +270,14 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // ! Path provider
 // * Mobiililaitteilla sovelluksilla on oma "Documents" -kansio
-// * jonka path tarvitaan tietokanta tiedoston tallentamiseen sinne.
+// * jonka path tarvitaan tietokanta tiedoston tallentamiseen sinne
+
+// ! Streams
+// * Pipe of data that you can manipulate and perform operations on
+
+// ! Stream controller
+// * Interface to your streams
+// * Evolution of a value through time
+
+// ! Singleton
+// * Class instance where that instance is the only one in the entire application

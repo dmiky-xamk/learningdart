@@ -4,18 +4,20 @@ import 'package:learningdart/views/services/crud/notes_service.dart';
 
 // * Defining a function we are gonna use in this view as a callback,
 // * when the user agrees to delete a note.
-typedef DeleteNotesCallback = void Function(DatabaseNote note);
+typedef NoteCallback = void Function(DatabaseNote note);
 
 // * "Don't leak services everywhere"
 // * Tämä widget pystyy delegoimaan noten poistamisen notes_viewille
 class NotesListView extends StatelessWidget {
   final List<DatabaseNote> notes;
-  final DeleteNotesCallback onDeleteNote;
+  final NoteCallback onDeleteNote;
+  final NoteCallback onTapNote;
 
   const NotesListView({
     Key? key,
     required this.notes,
     required this.onDeleteNote,
+    required this.onTapNote,
   }) : super(key: key);
 
   @override
@@ -26,6 +28,9 @@ class NotesListView extends StatelessWidget {
         final note = notes[index];
 
         return ListTile(
+          onTap: () {
+            onTapNote(note);
+          },
           title: Text(
             note.text,
             maxLines: 1,

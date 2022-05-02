@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:learningdart/utilities/generics/get_arguments.dart';
 import 'package:learningdart/views/services/auth/auth_service.dart';
 import 'package:learningdart/views/services/crud/notes_service.dart';
 
-class NewNoteView extends StatefulWidget {
-  const NewNoteView({Key? key}) : super(key: key);
+class CreateUpdateNoteView extends StatefulWidget {
+  const CreateUpdateNoteView({Key? key}) : super(key: key);
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
 }
 
 // * Luodaan uusi note tullessa tähän näkymään.
 // * HUOMIO! Hot reload tekisi joka kerta uuden noten tätä tiedostoa muokatessa!
-class _NewNoteViewState extends State<NewNoteView> {
+class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   DatabaseNote? _note;
   late final NotesService _notesService;
   late final TextEditingController _textController;
@@ -52,7 +53,18 @@ class _NewNoteViewState extends State<NewNoteView> {
     _textController.addListener(_textControllerListener);
   }
 
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
+    // * widgetNote riippuu siitä, tekeekö käyttäjä uuden noten
+    // * vai muokkaako käyttäjä jo olemassa olevaa notea
+    final widgetNote = context.getArgument<DatabaseNote>();
+
+    // * Muokataan notea
+    if (widgetNote != null) {
+      _note = widgetNote;
+      _textController.text = widgetNote.text;
+      return widgetNote;
+    }
+
     // * Tarkistetaan onko tähän näkymään tullessa note luotu jo aiemmin (hot reload tekee joka kerta)
     final existingNote = _note;
 
@@ -63,8 +75,10 @@ class _NewNoteViewState extends State<NewNoteView> {
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email!;
     final owner = await _notesService.getUser(email: email);
+    final newNote = await _notesService.createNote(owner: owner);
+    _note = newNote;
 
-    return await _notesService.createNote(owner: owner);
+    return newNote;
   }
 
   // * Ei ole async sillä poistamisen odottaminen ei hyödytä meitä
@@ -97,13 +111,10 @@ class _NewNoteViewState extends State<NewNoteView> {
         title: const Text("Add a new note"),
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetExistingNote(context),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              // * Saadaan note snapshotista
-              _note = snapshot.data as DatabaseNote;
-
               // * Aletaan kuuntelemaan tekstin muutoksia
               _setupTextControllerListener();
 
@@ -112,7 +123,8 @@ class _NewNoteViewState extends State<NewNoteView> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: const InputDecoration(
-                    hintText: "Start typing your note..."),
+                  hintText: "Start typing your note...",
+                ),
               );
             default:
               return const CircularProgressIndicator();

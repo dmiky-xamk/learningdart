@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:learningdart/extensions/list/filter.dart';
+
 import 'crud_exceptions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' show join;
@@ -15,6 +17,8 @@ class NotesService {
   // * Caching list of notes
   // * Sisältää ajankohtaiset käyttäjän notet
   List<DatabaseNote> _notes = [];
+
+  DatabaseUser? _user;
 
   // * Singleton (private initializer)
   static final NotesService _shared = NotesService._sharedInstance();
@@ -34,7 +38,16 @@ class NotesService {
   late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   // * Tyhjän stream state on "waiting". Heti kun stream sisältää yhdenkin noten, se on "active".
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _notesStreamController.stream.filter((note) {
+        final currentUser = _user;
+
+        if (currentUser != null) {
+          return note.userId == currentUser.id;
+        } else {
+          throw UserShouldBeSetBeforeReadingAllNotes();
+        }
+      });
 
   Future<void> _ensureDbIsOpen() async {
     try {
@@ -45,13 +58,26 @@ class NotesService {
   }
 
   // * FutureBuilder subscribee tähän funktioon, ja rakentaa UI:n tämän palauduttua
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       // * Jos getUser heittää errorin -> käyttäjää ei vielä ole -> luodaan uusi käyttäjä
       final user = await getUser(email: email);
+
+      if (setAsCurrentUser) {
+        _user = user;
+      }
+
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
+
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
+
       return createdUser;
     } catch (e) {
       rethrow;
@@ -80,10 +106,15 @@ class NotesService {
     await getNote(id: note.id);
 
     // Update DB
-    final updatesCount = await db.update(noteTable, {
-      textColumn: text,
-      isSyncedWithCloudColumn: 0,
-    });
+    final updatesCount = await db.update(
+      noteTable,
+      {
+        textColumn: text,
+        isSyncedWithCloudColumn: 0,
+      },
+      where: "id = ?",
+      whereArgs: [note.id],
+    );
 
     if (updatesCount == 0) {
       throw CouldNotUpdateNoteException();

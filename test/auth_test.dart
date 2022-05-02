@@ -120,7 +120,7 @@ class MockAuthProvider implements AuthProvider {
     // * Tarkistaa onhan käyttäjä olemassa ensin
     if (user == null) throw UserNotFoundAuthException();
 
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(isEmailVerified: true, email: templateEmail);
 
     _user = newUser;
   }
@@ -138,7 +138,7 @@ class MockAuthProvider implements AuthProvider {
     // if (email.trim().isEmpty) throw InvalidEmailAuthException();
     if (password == "foobar") throw WrongPasswordAuthException();
 
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(isEmailVerified: false, email: templateEmail);
     _user = user;
 
     return Future.value(_user);
@@ -168,3 +168,5 @@ class MockAuthProvider implements AuthProvider {
     );
   }
 }
+
+const templateEmail = "foo@bar.baz";

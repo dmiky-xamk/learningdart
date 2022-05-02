@@ -26,6 +26,7 @@ class NotesService {
   final _notesStreamController =
       StreamController<List<DatabaseNote>>.broadcast();
 
+  // * Tyhjän stream state on "waiting". Heti kun stream sisältää yhdenkin noten, se on "active".
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
   Future<void> _ensureDbIsOpen() async {

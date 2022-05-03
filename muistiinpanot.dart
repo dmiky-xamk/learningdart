@@ -290,3 +290,8 @@ For example, a revision may be released to QA (quality control), and they come b
 // * Jokaisella käyttäjällä voisi olla oma notes collection esim. käyttäjä ID:n mukaan
 
 // * Document is an object inside a collection (esim. käyttäjän note)
+
+// ! Plugin vs Package
+// * Package extends the current capabilities of Flutter
+// * Plugin menee Flutterin kykyjen yli
+// * Plugin täytyy kirjoittaa eri alustoille omana koodinaan

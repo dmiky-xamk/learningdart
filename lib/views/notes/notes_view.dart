@@ -1,10 +1,13 @@
 // * Pää widget kirjautuneille asiakkaille
 import 'package:flutter/material.dart';
+import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
+import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/services/cloud/cloud_note.dart';
 import 'package:learningdart/services/cloud/firebase_cloud_storage.dart';
 import 'package:learningdart/utilities/dialogs/signout_dialog.dart';
 import 'package:learningdart/views/notes/notes_list_view.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 
 import '../../constants/routes.dart';
 import '../../enums/menu_action.dart';
@@ -16,15 +19,18 @@ class NotesView extends StatefulWidget {
   State<NotesView> createState() => _NotesViewState();
 }
 
-void handleMenuAction(action, context) async {
+void handleMenuAction(MenuAction action, BuildContext context) async {
   switch (action) {
     case MenuAction.logout:
       // * Dialogi palauttaa joko true tai false
       final shouldSignOut = await showSignOutDialog(context);
 
       if (shouldSignOut) {
-        await AuthService.firebase().signOut();
-        Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
+        // * Lähetetään AuthBlocille event -> käyttäjä haluaa kirjautua ulos
+        // * Tämän näkymän ei tarvitse huolehtia näkymän vaihtamisesta jos kirjautuminen onnistuu
+        context.read<AuthBloc>().add(
+              const AuthEventSignOut(),
+            );
       }
   }
 }

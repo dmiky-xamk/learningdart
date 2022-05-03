@@ -1,8 +1,11 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/utilities/dialogs/error_dialog.dart';
+
+import '../services/auth/bloc/auth_bloc.dart';
 import 'package:learningdart/services/auth/auth_exceptions.dart';
-import 'package:learningdart/services/auth/auth_service.dart';
 
 // * Kirjautumisnäkymä
 class LoginView extends StatefulWidget {
@@ -48,26 +51,14 @@ class _LoginViewState extends State<LoginView> {
     final password = _password.text;
 
     try {
-      await AuthService.firebase().signIn(
-        email: email,
-        password: password,
-      );
-
-      final user = AuthService.firebase().currentUser;
-
-      if (user?.isEmailVerified ?? false) {
-        // * Email is verified
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          notesRoute,
-          (_) => false,
-        );
-      } else {
-        // * Email is not verified
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          verifyEmailRoute,
-          (_) => false,
-        );
-      }
+      // * Kerrotaan Blocille -> käyttäjä haluaa kirjautua sisään
+      // * Tämän näkymän ei tarvitse tietää sen logiikkaa
+      context.read<AuthBloc>().add(
+            AuthEventSignIn(
+              email,
+              password,
+            ),
+          );
     } on UserNotFoundAuthException {
       showErrorDialogWrapper("User not found");
     } on WrongPasswordAuthException {

@@ -306,6 +306,8 @@ For example, a revision may be released to QA (quality control), and they come b
 // * eikä tiedä business logiikasta
 // * Tarvitaan lisäksi flutter_bloc, jotta voidaan yhdistää Dart -kieltä käyttävä businesslogiikka UI:n kanssa
 
+// * Mietittävä mitä dataa pitää lähettää eventissä sekä mitä dataa palauttaa statessa
+
 // * TEORIA
 
 // * Bloc class (the core of the Bloc library)

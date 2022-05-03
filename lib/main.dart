@@ -1,11 +1,13 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
+import 'package:learningdart/services/auth/bloc/auth_event.dart';
+import 'package:learningdart/services/auth/bloc/auth_state.dart';
+import 'package:learningdart/services/auth/firebase_auth_provider.dart';
 import 'package:learningdart/views/login_view.dart';
 import 'package:learningdart/views/notes/create_update_note_view.dart';
 import 'package:learningdart/views/register_view.dart';
-import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/views/verify_email_view.dart';
 import 'views/notes/notes_view.dart';
 import 'dart:developer' as devtools show log;
@@ -25,7 +27,11 @@ void main() {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      // ? BlocProvider injectaa AuthBlocin koko sovelluksen contextiin
+      home: BlocProvider<AuthBloc>(
+        create: (context) => AuthBloc(FirebaseAuthProvider()),
+        child: const HomePage(),
+      ),
       // * Named routes
       routes: {
         loginRoute: (context) => const LoginView(),
@@ -38,38 +44,34 @@ void main() {
   );
 }
 
-// class HomePage extends StatelessWidget {
-//   const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       future: AuthService.firebase().initialize(),
-//       builder: (context, snapshot) {
-//         switch (snapshot.connectionState) {
-//           case ConnectionState.done:
-//             final user = AuthService.firebase().currentUser;
+  @override
+  Widget build(BuildContext context) {
+    // ? Voidaan lukea BlocProviderin injektoima AuthBloc, ja kommunikoida
+    // ? sen kanssa .add metodilla lähettämällä eventin
+    context.read<AuthBloc>().add(const AuthEventInitialize());
 
-//             if (user != null) {
-//               if (user.isEmailVerified) {
-//                 return const NotesView();
-//               } else {
-//                 return const VerifyEmailView();
-//               }
-//             } else {
-//               // TODO Palauta registerview?
-//               return const LoginView();
-//             }
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthStateSignedIn) {
+          return const NotesView();
+        } else if (state is AuthStateNeedsVerification) {
+          return const VerifyEmailView();
+        } else if (state is AuthStateSignedOut) {
+          return const LoginView();
+        } else {
+          return const Scaffold(
+            body: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
 
-//           default:
-//             // TODO Scaffold tälle? Muuta connectionstate.loading?
-//             return const CircularProgressIndicator();
-//         }
-//       },
-//     );
-//   }
-// }
-
+/*
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -231,3 +233,4 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     }));
   }
 }
+*/

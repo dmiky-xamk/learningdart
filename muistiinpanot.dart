@@ -295,3 +295,33 @@ For example, a revision may be released to QA (quality control), and they come b
 // * Package extends the current capabilities of Flutter
 // * Plugin menee Flutterin kykyjen yli
 // * Plugin täytyy kirjoittaa eri alustoille omana koodinaan
+
+// ! State management
+// * "We have our business logic inside our UI and that's usually not a good idea"
+// * Eritellään käyttöliittymän logiikka ja businesslogiikka toisistaan
+
+// ! Bloc
+// * Käyttää sisäisesti Streamseja sekä Futureja
+// * Tämän käytöllä varmistetaan että UI hoitaa vain visuaalisen puolen
+// * eikä tiedä business logiikasta
+// * Tarvitaan lisäksi flutter_bloc, jotta voidaan yhdistää Dart -kieltä käyttävä businesslogiikka UI:n kanssa
+
+// * TEORIA
+
+// * Bloc class (the core of the Bloc library)
+// Tähän lisätään eventtejä, ja lisätyt eventit voivat tuottaa "staten"
+// Class alkaa statella -> output on aina state. (esim. logged in, logged out, error screen...)
+// Classin input on events. (esim. log in with this info, register with this info...)
+
+// * BlocProvider
+// Instance Bloc classista 
+
+// * BlocListener
+// Kuuntelee ja reagoi muutoksiin Bloc statessa
+
+// * BlocBuilder
+// Tuottaa widgetin Bloc staten muutoksien mukaan
+
+// * BlocConsumer
+// Yhdistää Listenerin ja Builderin.
+// Mahdollista kuunnella muutoksia Blocissa ja reagoida niihin side-effectillä ja tai widgetillä

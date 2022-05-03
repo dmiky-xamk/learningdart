@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:learningdart/utilities/dialogs/signout_dialog.dart';
 import 'package:learningdart/views/notes/notes_list_view.dart';
-import 'package:learningdart/views/services/auth/auth_service.dart';
-import 'package:learningdart/views/services/crud/notes_service.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
+import 'package:learningdart/services/crud/notes_service.dart';
 
 import '../../constants/routes.dart';
 import '../../enums/menu_action.dart';
@@ -30,7 +30,7 @@ void handleMenuAction(action, context) async {
 
 class _NotesViewState extends State<NotesView> {
   late final NotesService _notesService;
-  String get userEmail => AuthService.firebase().currentUser!.email!;
+  String get userEmail => AuthService.firebase().currentUser!.email;
 
   @override
   void initState() {

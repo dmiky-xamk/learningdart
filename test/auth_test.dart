@@ -1,6 +1,6 @@
-import 'package:learningdart/views/services/auth/auth_exceptions.dart';
-import 'package:learningdart/views/services/auth/auth_provider.dart';
-import 'package:learningdart/views/services/auth/auth_user.dart';
+import 'package:learningdart/services/auth/auth_exceptions.dart';
+import 'package:learningdart/services/auth/auth_provider.dart';
+import 'package:learningdart/services/auth/auth_user.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -120,7 +120,8 @@ class MockAuthProvider implements AuthProvider {
     // * Tarkistaa onhan käyttäjä olemassa ensin
     if (user == null) throw UserNotFoundAuthException();
 
-    const newUser = AuthUser(isEmailVerified: true, email: templateEmail);
+    const newUser =
+        AuthUser(isEmailVerified: true, email: templateEmail, id: templateId);
 
     _user = newUser;
   }
@@ -138,7 +139,8 @@ class MockAuthProvider implements AuthProvider {
     // if (email.trim().isEmpty) throw InvalidEmailAuthException();
     if (password == "foobar") throw WrongPasswordAuthException();
 
-    const user = AuthUser(isEmailVerified: false, email: templateEmail);
+    const user =
+        AuthUser(isEmailVerified: false, email: templateEmail, id: templateId);
     _user = user;
 
     return Future.value(_user);
@@ -170,3 +172,4 @@ class MockAuthProvider implements AuthProvider {
 }
 
 const templateEmail = "foo@bar.baz";
+const templateId = "id";

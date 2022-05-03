@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learningdart/utilities/dialogs/delete_dialog.dart';
-import 'package:learningdart/views/services/crud/notes_service.dart';
+import 'package:learningdart/services/crud/notes_service.dart';
 
 // * Defining a function we are gonna use in this view as a callback,
 // * when the user agrees to delete a note.

@@ -281,3 +281,12 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // ! Singleton
 // * Class instance where that instance is the only one in the entire application
+
+// ! Collections and Documents (chapter 36)
+// * NoSQL is more document based than SQL / SQLite
+// * Looser data definition
+
+// * Collection is a group of related objects (esim. notes)
+// * Jokaisella käyttäjällä voisi olla oma notes collection esim. käyttäjä ID:n mukaan
+
+// * Document is an object inside a collection (esim. käyttäjän note)

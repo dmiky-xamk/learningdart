@@ -1,9 +1,9 @@
-// * Singleton
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:learningdart/services/cloud/cloud_note.dart';
 import 'package:learningdart/services/cloud/cloud_storage_constants.dart';
 import 'package:learningdart/services/cloud/cloud_storage_exceptions.dart';
 
+// * Singleton
 class FirebaseCloudStorage {
   // * Talking with FireStore -> grabbing all notes
   // * CollectionReference = stream you can read from and write to
@@ -43,11 +43,19 @@ class FirebaseCloudStorage {
           .map((doc) => CloudNote.fromSnapshot(doc))
           .where((note) => note.ownerUserId == ownerUserId));
 
-  void createNewNote({required String ownerUserId}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: "",
     });
+
+    final fetchedNote = await document.get();
+
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      text: "",
+    );
   }
 
   Future<Iterable<CloudNote>> fetchNotes({required String ownerUserId}) async {
@@ -59,15 +67,7 @@ class FirebaseCloudStorage {
           )
           .get()
           .then(
-            (value) => value.docs.map(
-              (doc) {
-                return CloudNote(
-                  documentId: doc.id,
-                  ownerUserId: doc.data()[ownerUserIdFieldName] as String,
-                  text: doc.data()[textFieldName] as String,
-                );
-              },
-            ),
+            (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
           );
     } catch (_) {
       throw CouldNotGetAllNotesException();

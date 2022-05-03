@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:learningdart/services/cloud/cloud_note.dart';
 import 'package:learningdart/utilities/dialogs/delete_dialog.dart';
-import 'package:learningdart/services/crud/notes_service.dart';
 
 // * Defining a function we are gonna use in this view as a callback,
 // * when the user agrees to delete a note.
-typedef NoteCallback = void Function(DatabaseNote note);
+typedef NoteCallback = void Function(CloudNote note);
 
 // * "Don't leak services everywhere"
 // * Tämä widget pystyy delegoimaan noten poistamisen notes_viewille
 class NotesListView extends StatelessWidget {
-  final List<DatabaseNote> notes;
+  final Iterable<CloudNote> notes;
   final NoteCallback onDeleteNote;
   final NoteCallback onTapNote;
 
@@ -25,7 +25,7 @@ class NotesListView extends StatelessWidget {
     return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (context, index) {
-        final note = notes[index];
+        final note = notes.elementAt(index);
 
         return ListTile(
           onTap: () {

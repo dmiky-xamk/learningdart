@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:learningdart/utilities/generics/get_arguments.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
-import 'package:learningdart/services/crud/notes_service.dart';
+import 'package:learningdart/services/cloud/cloud_note.dart';
+import 'package:learningdart/services/cloud/cloud_storage_exceptions.dart';
+import 'package:learningdart/services/cloud/firebase_cloud_storage.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({Key? key}) : super(key: key);
@@ -13,14 +15,14 @@ class CreateUpdateNoteView extends StatefulWidget {
 // * Luodaan uusi note tullessa tähän näkymään.
 // * HUOMIO! Hot reload tekisi joka kerta uuden noten tätä tiedostoa muokatessa!
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
-  DatabaseNote? _note;
-  late final NotesService _notesService;
+  CloudNote? _note;
+  late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
 
   @override
   void initState() {
     // * Singleton -> aina vain yksi instance
-    _notesService = NotesService();
+    _notesService = FirebaseCloudStorage();
     _textController = TextEditingController();
     super.initState();
   }
@@ -43,7 +45,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
     final text = _textController.text;
     await _notesService.updateNote(
-      note: note,
+      documentId: note.documentId,
       text: text,
     );
   }
@@ -53,10 +55,10 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _textController.addListener(_textControllerListener);
   }
 
-  Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
+  Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     // * widgetNote riippuu siitä, tekeekö käyttäjä uuden noten
     // * vai muokkaako käyttäjä jo olemassa olevaa notea
-    final widgetNote = context.getArgument<DatabaseNote>();
+    final widgetNote = context.getArgument<CloudNote>();
 
     // * Muokataan notea
     if (widgetNote != null) {
@@ -73,9 +75,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     }
 
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    final owner = await _notesService.getUser(email: email);
-    final newNote = await _notesService.createNote(owner: owner);
+    final userId = currentUser.id;
+    final newNote = await _notesService.createNewNote(ownerUserId: userId);
     _note = newNote;
 
     return newNote;
@@ -87,7 +88,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
     // * Poistetaan note jos teksti on tyhjä poistuessa näkymästä
     if (_textController.text.trim().isEmpty && note != null) {
-      _notesService.deleteNote(id: note.id);
+      _notesService.deleteNote(documentId: note.documentId);
     }
   }
 
@@ -98,7 +99,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
     if (note != null && text.trim().isNotEmpty) {
       await _notesService.updateNote(
-        note: note,
+        documentId: note.documentId,
         text: text,
       );
     }

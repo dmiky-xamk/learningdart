@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
+import 'package:learningdart/services/auth/bloc/auth_state.dart';
 import 'package:learningdart/utilities/dialogs/error_dialog.dart';
 
 import '../services/auth/bloc/auth_bloc.dart';
@@ -39,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  void showErrorDialogWrapper(String errorMessage) async {
+  Future<void> showErrorDialogWrapper(String errorMessage) async {
     await showErrorDialog(
       context,
       errorMessage,
@@ -97,7 +98,21 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             controller: _password,
           ),
-          TextButton(onPressed: loginUser, child: const Text("Sign in")),
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if (state is AuthStateSignedOut) {
+                if (state.exception is UserNotFoundAuthException) {
+                  await showErrorDialogWrapper("User not found");
+                } else if (state.exception is WrongPasswordAuthException) {
+                  await showErrorDialogWrapper("Wrong credentials");
+                } else if (state.exception is GenericAuthException) {
+                  await showErrorDialogWrapper("Authentication error");
+                }
+              }
+            },
+            child:
+                TextButton(onPressed: loginUser, child: const Text("Sign in")),
+          ),
           TextButton(
               onPressed: navToRegisterView,
               child: const Text("Don't have an account yet? Sign up."))

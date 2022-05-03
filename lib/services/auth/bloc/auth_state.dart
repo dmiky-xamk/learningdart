@@ -24,22 +24,18 @@ class AuthStateSignedIn extends AuthState {
   const AuthStateSignedIn(this.user);
 }
 
-// * Jos kirjautuminen epäonnistuu
-class AuthStateSignInFailure extends AuthState {
-  // * Exception joka aiheutti kirjautumisen epäonnistumisen
-  // * Kirjautuminen epäonnistui -> state kantaa mukanaan epäonnistumisen syytä UI:ta varten
-  // * jotta se voi näyttää esim. oikean virheilmoitus
-  final Exception exception;
-
-  const AuthStateSignInFailure(this.exception);
-}
-
 class AuthStateNeedsVerification extends AuthState {
   const AuthStateNeedsVerification();
 }
 
+// * Kirjautuessa tapahtuvat Exceptionit tulevat täältä (jos kirjautuminen epäonnistuu, olet silti kirjautuneena ulos)
 class AuthStateSignedOut extends AuthState {
-  const AuthStateSignedOut();
+  // * Exception joka aiheutti uloskirjautumisen epäonnistumisen
+  // * Kirjautuminen epäonnistui -> state kantaa mukanaan epäonnistumisen syytä UI:ta varten
+  // * jotta se voi näyttää esim. oikean virheilmoitus
+  final Exception? exception;
+
+  const AuthStateSignedOut(this.exception);
 }
 
 class AuthStateSignOutFailure extends AuthState {

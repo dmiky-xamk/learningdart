@@ -320,6 +320,7 @@ For example, a revision may be released to QA (quality control), and they come b
 
 // * BlocListener
 // Kuuntelee ja reagoi muutoksiin Bloc statessa
+// Antaa mahdollisuuten tuottaa side-effectejä (esim. näytä dialogi, näytä toinen view...)
 
 // * BlocBuilder
 // Tuottaa widgetin Bloc staten muutoksien mukaan

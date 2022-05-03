@@ -5,6 +5,7 @@ import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/services/auth/bloc/auth_state.dart';
 import 'package:learningdart/services/auth/firebase_auth_provider.dart';
+import 'package:learningdart/utilities/dialogs/error_dialog.dart';
 import 'package:learningdart/views/login_view.dart';
 import 'package:learningdart/views/notes/create_update_note_view.dart';
 import 'package:learningdart/views/register_view.dart';

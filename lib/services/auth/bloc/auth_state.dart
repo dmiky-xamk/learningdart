@@ -8,13 +8,20 @@ import 'package:equatable/equatable.dart';
 // * Tehdään immutable abstract class ilman logiikkaa joista muut perii
 @immutable
 abstract class AuthState {
+  final bool isLoading;
+  final String? loadingText;
+
   // * Const constructor statelle ja eventeille -> perivät luokat voivat käyttää const constructoria myös
-  const AuthState();
+  const AuthState({
+    required this.isLoading,
+    this.loadingText = "Please wait a moment",
+  });
 }
 
 // * Sovellus ei ole vielä valmis näytettäväksi
 class AuthStateUnintialized extends AuthState {
-  const AuthStateUnintialized();
+  const AuthStateUnintialized({required bool isLoading})
+      : super(isLoading: isLoading);
 }
 
 // ? State should carry with them all the information the UI or the consumer of that bloc
@@ -23,11 +30,15 @@ class AuthStateSignedIn extends AuthState {
   // * State on kirjauduttu sisään -> state kantaa mukanaan käyttäjän tietoja
   final AuthUser user;
 
-  const AuthStateSignedIn(this.user);
+  const AuthStateSignedIn({
+    required this.user,
+    required bool isLoading,
+  }) : super(isLoading: isLoading);
 }
 
 class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification();
+  const AuthStateNeedsVerification({required bool isLoading})
+      : super(isLoading: isLoading);
 }
 
 // * Kirjautuessa tapahtuvat Exceptionit tulevat täältä (jos kirjautuminen epäonnistuu, olet silti kirjautuneena ulos)
@@ -40,12 +51,16 @@ class AuthStateSignedOut extends AuthState with EquatableMixin {
   // ? FLAG
   // * Kun käyttäjä yrittää kirjautua sisään -> loading true kun tarkistetaan tietoja
   // * "Loading flag built into existing states"
-  final bool isLoading;
+  // final bool isLoading;
 
   const AuthStateSignedOut({
     required this.exception,
-    required this.isLoading,
-  });
+    required bool isLoading,
+    String? loadingText,
+  }) : super(
+          isLoading: isLoading,
+          loadingText: loadingText,
+        );
 
   // * Kun tuotetaan samasta classista useampia stateja, täytyy vertailla instanceja jotta ohjelma tietää päivittää statea
   // * Annetaan propsit, jotka otetaan huomioon vertailussa
@@ -57,5 +72,6 @@ class AuthStateSignedOut extends AuthState with EquatableMixin {
 class AuthStateRegistering extends AuthState {
   final Exception? exception;
 
-  const AuthStateRegistering(this.exception);
+  const AuthStateRegistering({required this.exception, required bool isLoading})
+      : super(isLoading: isLoading);
 }

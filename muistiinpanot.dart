@@ -328,3 +328,11 @@ For example, a revision may be released to QA (quality control), and they come b
 // * BlocConsumer
 // Yhdistää Listenerin ja Builderin.
 // Mahdollista kuunnella muutoksia Blocissa ja reagoida niihin side-effectillä ja tai widgetillä
+
+// ! Overlays
+// * Mahdollisuus sijoittaa itsensä kaiken muun sisällön päälle
+// * Erittäin hyviä latausruutuihin
+
+// ! Loading screen controller
+// * Antaa mahdollisuuden hävittää latausruutu
+// * Antaa mahdollisuuden päivittää latausruudun sisältö

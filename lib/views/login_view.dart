@@ -23,7 +23,6 @@ class _LoginViewState extends State<LoginView> {
   // Samanlainen mitä useState reactissa. Teksti päivittyy aina kun käyttäjä kirjoittaa jotain.
   late final TextEditingController _email;
   late final TextEditingController _password;
-  CloseDialog? _closeDialogHandle;
 
   // * Tämä suoritetaan kun HomePage luodaan
   @override
@@ -73,19 +72,6 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateSignedOut) {
-          final closeDialog = _closeDialogHandle;
-
-          // * Ei ladata nyt, mutta ladattiin aiemmin
-          if (!state.isLoading && closeDialog != null) {
-            closeDialog();
-            _closeDialogHandle = null;
-          } else if (state.isLoading && closeDialog == null) {
-            _closeDialogHandle = showLoadingDialog(
-              context: context,
-              text: "Loading...",
-            );
-          }
-
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialogWrapper("User not found");
           } else if (state.exception is WrongPasswordAuthException) {

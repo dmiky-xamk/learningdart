@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// ! Tätä ei tarvita enää kun luotiin loading_screen.dart
+
 // * Allow the caller to display and dismiss this dialog
 // * Dialogin luominen palauttaa kutsujalle funktion dialogin sulkemista varten
 
@@ -32,5 +34,6 @@ CloseDialog showLoadingDialog({
   );
 
   // * Palautetaan funktio jolla suljetaan dialog (CloseDialog)
+  // ? Tämä ei tiedä mitä poppaa -> ei välttämättä meidän dialogia
   return () => Navigator.of(context).pop();
 }

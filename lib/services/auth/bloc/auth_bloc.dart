@@ -7,7 +7,8 @@ import 'package:learningdart/services/auth/bloc/auth_state.dart';
 // * Luodaan logiikka eventien ja statejen ympärille
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthProvider provider) : super(const AuthStateUnintialized()) {
+  AuthBloc(AuthProvider provider)
+      : super(const AuthStateUnintialized(isLoading: true)) {
     // ? Constructorin sisällä handlataan mahdolliset eventit
 
     // * Initialize (avataan sovellus: ei kirjautunut, sähköpostia ei varmistettu, kirjautunut)
@@ -23,9 +24,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             isLoading: false,
           ));
         } else if (!user.isEmailVerified) {
-          emit(const AuthStateNeedsVerification());
+          emit(const AuthStateNeedsVerification(isLoading: false));
         } else {
-          emit(AuthStateSignedIn(user));
+          emit(AuthStateSignedIn(
+            user: user,
+            isLoading: false,
+          ));
         }
       },
     );
@@ -39,6 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           const AuthStateSignedOut(
             exception: null,
             isLoading: true,
+            loadingText: "Please wait while you are being signed in",
           ),
         );
 
@@ -60,7 +65,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               ),
             );
 
-            emit(const AuthStateNeedsVerification());
+            emit(const AuthStateNeedsVerification(isLoading: false));
           } else {
             emit(
               const AuthStateSignedOut(
@@ -68,7 +73,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 isLoading: false,
               ),
             );
-            emit(AuthStateSignedIn(user));
+            emit(AuthStateSignedIn(
+              user: user,
+              isLoading: false,
+            ));
           }
         } on Exception catch (e) {
           emit(
@@ -96,10 +104,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await provider.sendEmailVerification();
 
           // * Uuden käyttäjän luotua state on sähköpostin varmistus
-          emit(const AuthStateNeedsVerification());
+          emit(const AuthStateNeedsVerification(isLoading: false));
         } on Exception catch (e) {
           // * Olet rekisteröitymässä ja jotain pahaa tapahtui
-          emit(AuthStateRegistering(e));
+          emit(AuthStateRegistering(
+            exception: e,
+            isLoading: false,
+          ));
         }
       },
     );

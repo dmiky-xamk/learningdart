@@ -7,7 +7,7 @@ import 'package:learningdart/services/auth/bloc/auth_state.dart';
 // * Luodaan logiikka eventien ja statejen ympärille
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthProvider provider) : super(const AuthStateLoading()) {
+  AuthBloc(AuthProvider provider) : super(const AuthStateUnintialized()) {
     // ? Constructorin sisällä handlataan mahdolliset eventit
 
     // * Initialize (avataan sovellus: ei kirjautunut, sähköpostia ei varmistettu, kirjautunut)
@@ -17,7 +17,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = provider.currentUser;
 
         if (user == null) {
-          emit(const AuthStateSignedOut(null));
+          // * Jos ei käyttäjää -> kirjautunut ulos state -> ei virhettä eikä ladata mitään
+          emit(const AuthStateSignedOut(
+            exception: null,
+            isLoading: false,
+          ));
         } else if (!user.isEmailVerified) {
           emit(const AuthStateNeedsVerification());
         } else {
@@ -30,7 +34,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventSignIn>(
       ((event, emit) async {
         // * Vaihdetaan state lataamaan kun yritetään kirjautua sisään
-        // emit(const AuthStateLoading());
+        // emit(const AuthStateUnintialized());
+        emit(
+          const AuthStateSignedOut(
+            exception: null,
+            isLoading: true,
+          ),
+        );
 
         final email = event.email;
         final password = event.password;
@@ -42,25 +52,86 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             password: password,
           );
 
-          emit(AuthStateSignedIn(user));
+          if (!user.isEmailVerified) {
+            emit(
+              const AuthStateSignedOut(
+                exception: null,
+                isLoading: false,
+              ),
+            );
+
+            emit(const AuthStateNeedsVerification());
+          } else {
+            emit(
+              const AuthStateSignedOut(
+                exception: null,
+                isLoading: false,
+              ),
+            );
+            emit(AuthStateSignedIn(user));
+          }
         } on Exception catch (e) {
-          emit(AuthStateSignedOut(e));
+          emit(
+            AuthStateSignedOut(
+              exception: e,
+              isLoading: false,
+            ),
+          );
         }
       }),
+    );
+
+    // * Register
+    on<AuthEventRegister>(
+      (event, emit) async {
+        final email = event.email;
+        final password = event.password;
+
+        try {
+          await provider.signUp(
+            email: email,
+            password: password,
+          );
+
+          await provider.sendEmailVerification();
+
+          // * Uuden käyttäjän luotua state on sähköpostin varmistus
+          emit(const AuthStateNeedsVerification());
+        } on Exception catch (e) {
+          // * Olet rekisteröitymässä ja jotain pahaa tapahtui
+          emit(AuthStateRegistering(e));
+        }
+      },
     );
 
     // * Sign out
     on<AuthEventSignOut>(
       (_, emit) async {
         try {
-          emit(const AuthStateLoading());
           await provider.signOut();
-
-          emit(const AuthStateSignedOut(null));
+          emit(
+            const AuthStateSignedOut(
+              exception: null,
+              isLoading: false,
+            ),
+          );
         } on Exception catch (e) {
-          emit(AuthStateSignOutFailure(e));
+          emit(
+            AuthStateSignedOut(
+              exception: e,
+              isLoading: false,
+            ),
+          );
         }
       },
     );
+
+    // * Send email verification
+    on<AuthEventSendEmailVerification>((_, emit) async {
+      await provider.sendEmailVerification();
+
+      // * Palautetaan sama state sillä ulkonäkö ei muutu sähköpostin lähetettyä
+      emit(state);
+    });
   }
 }

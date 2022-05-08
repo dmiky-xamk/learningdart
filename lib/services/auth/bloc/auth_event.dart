@@ -26,3 +26,19 @@ class AuthEventSignIn extends AuthEvent {
 class AuthEventSignOut extends AuthEvent {
   const AuthEventSignOut();
 }
+
+class AuthEventSendEmailVerification extends AuthEvent {
+  const AuthEventSendEmailVerification();
+}
+
+class AuthEventRegister extends AuthEvent {
+  final String email;
+  final String password;
+
+  const AuthEventRegister(this.email, this.password);
+}
+
+// * Lähetetään käyttäjä rekisteröintinäkymään
+class AuthEventShouldRegister extends AuthEvent {
+  const AuthEventShouldRegister();
+}

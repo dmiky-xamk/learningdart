@@ -1,5 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
+import 'package:learningdart/services/auth/bloc/auth_event.dart';
+import 'package:learningdart/services/auth/bloc/auth_state.dart';
 import 'package:learningdart/utilities/dialogs/error_dialog.dart';
 import 'package:learningdart/services/auth/auth_exceptions.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
@@ -43,62 +47,66 @@ class _RegisterViewState extends State<RegisterView> {
     final email = _email.text;
     final password = _password.text;
 
-    try {
-      await AuthService.firebase().signUp(
-        email: email,
-        password: password,
-      );
+    context.read<AuthBloc>().add(
+          AuthEventRegister(
+            email,
+            password,
+          ),
+        );
 
-      // * Lähetetään varmistusta varten sähköposti
-      await AuthService.firebase().sendEmailVerification();
-
-      // * Navigoidaan sähköpostin varmistus näkymään
-      Navigator.of(context).pushNamed(verifyEmailRoute);
-    } on WeakPasswordAuthException {
-      showErrorDialogWrapper("Try a stronger password");
-    } on EmailAlreadyInUseAuthException {
-      showErrorDialogWrapper("Email is already in use");
-    } on InvalidEmailAuthException {
-      showErrorDialogWrapper("Please enter a valid email");
-    } on GenericAuthException {
-      showErrorDialogWrapper("Failed to register");
-    } catch (e) {
-      showErrorDialogWrapper("Tuntematon virhe: ${e.toString()}");
-    }
+    // * Lähetetään varmistusta varten sähköposti
+    context.read<AuthBloc>().add(const AuthEventSendEmailVerification());
   }
 
   void navToLoginView() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      loginRoute,
-      (_) => false,
-    );
+    // * Lähetetään käyttäjä kirjautumisnäkymään (käytetään signout eventtiä(?))
+    context.read<AuthBloc>().add(
+          const AuthEventSignOut(),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text("Sign up")),
-        body: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(hintText: "Email"),
-              autocorrect: false,
-              enableSuggestions: false,
-              keyboardType: TextInputType.emailAddress,
-              controller: _email,
-            ),
-            TextField(
-              decoration: const InputDecoration(hintText: "Password"),
-              obscureText: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              controller: _password,
-            ),
-            TextButton(onPressed: registerUser, child: const Text("Sign up")),
-            TextButton(
-                onPressed: navToLoginView,
-                child: const Text("Already have an account? Sign in."))
-          ],
-        ));
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        // * Varmistutaan että ollaan rekisteröitymässä
+        if (state is AuthStateRegistering) {
+          // * Mahdollisia virheitä joita voi tulla rekisteröitymisen aikana
+          if (state.exception is WeakPasswordAuthException) {
+            await showErrorDialog(context, "Weak password");
+          } else if (state.exception is EmailAlreadyInUseAuthException) {
+            await showErrorDialog(context, "Email is already in use");
+          } else if (state.exception is InvalidEmailAuthException) {
+            await showErrorDialog(context, "Invalid email");
+          } else if (state.exception is GenericAuthException) {
+            await showErrorDialog(context, "Failed to register");
+          }
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(title: const Text("Sign up")),
+          body: Column(
+            children: [
+              TextField(
+                decoration: const InputDecoration(hintText: "Email"),
+                autocorrect: false,
+                enableSuggestions: false,
+                keyboardType: TextInputType.emailAddress,
+                controller: _email,
+              ),
+              TextField(
+                decoration: const InputDecoration(hintText: "Password"),
+                obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                controller: _password,
+              ),
+              TextButton(onPressed: registerUser, child: const Text("Sign up")),
+              TextButton(
+                  onPressed: navToLoginView,
+                  child: const Text("Already have an account? Sign in."))
+            ],
+          )),
+    );
   }
 }

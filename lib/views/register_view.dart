@@ -85,27 +85,43 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
           appBar: AppBar(title: const Text("Sign up")),
-          body: Column(
-            children: [
-              TextField(
-                decoration: const InputDecoration(hintText: "Email"),
-                autocorrect: false,
-                enableSuggestions: false,
-                keyboardType: TextInputType.emailAddress,
-                controller: _email,
-              ),
-              TextField(
-                decoration: const InputDecoration(hintText: "Password"),
-                obscureText: true,
-                autocorrect: false,
-                enableSuggestions: false,
-                controller: _password,
-              ),
-              TextButton(onPressed: registerUser, child: const Text("Sign up")),
-              TextButton(
-                  onPressed: navToLoginView,
-                  child: const Text("Already have an account? Sign in."))
-            ],
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Enter your email and password to see your notes!"),
+                TextField(
+                  autocorrect: false,
+                  autofocus: true,
+                  controller: _email,
+                  decoration: const InputDecoration(hintText: "Email"),
+                  enableSuggestions: false,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                TextField(
+                  autocorrect: false,
+                  controller: _password,
+                  decoration: const InputDecoration(hintText: "Password"),
+                  enableSuggestions: false,
+                  obscureText: true,
+                ),
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: registerUser,
+                          child: const Text("Sign up")),
+                      TextButton(
+                          onPressed: navToLoginView,
+                          child:
+                              const Text("Already have an account? Sign in.")),
+                    ],
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

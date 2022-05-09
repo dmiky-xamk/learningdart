@@ -5,7 +5,7 @@ import 'auth_user.dart';
 
 // ! TODO Pitääkö metodien olla async sillä AuthProvider Firebase metodid ovat?
 
-// ? Why is AuthService an AuthProvider?
+// ? AuthService delegatee toiminnallisuuden sitä käyttävälle providerille
 // * It relays the messages of the given auth provider, but can have more logic
 // * Exposes the implementation of its provider
 class AuthService implements AuthProvider {
@@ -48,4 +48,8 @@ class AuthService implements AuthProvider {
 
   @override
   Future<void> initialize() => provider.initialize();
+
+  @override
+  Future<void> sendPasswordReset({required String toEmail}) =>
+      provider.sendPasswordReset(toEmail: toEmail);
 }

@@ -6,10 +6,11 @@ import "auth_user.dart";
 // * Esim. Firebasella kirjautumista hallitaan näiden metodien kautta FirebaseAuthProvides -classissa
 
 // * Abstract, protocol, interface
+// * Abstract class -> Funktioilla ei bodya
 abstract class AuthProvider {
   AuthUser? get currentUser;
 
-  // * Abstract class -> Funktioilla ei bodya
+  Future<void> initialize();
 
   // * AuthUser ei tarvitse olla nullable, sillä toinen tapa ilmoittaa
   // * kirjautumisen epäonnistumisesta on palauttaa Exception.
@@ -24,8 +25,6 @@ abstract class AuthProvider {
   });
 
   Future<void> signOut();
-
   Future<void> sendEmailVerification();
-
-  Future<void> initialize();
+  Future<void> sendPasswordReset({required String toEmail});
 }

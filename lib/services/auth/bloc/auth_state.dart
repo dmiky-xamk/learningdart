@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 // * Tehdään immutable abstract class ilman logiikkaa joista muut perii
 @immutable
 abstract class AuthState {
+  // * Kaikki perivät isLoading joten statet voivat käyttää sitä
   final bool isLoading;
   final String? loadingText;
 
@@ -74,4 +75,17 @@ class AuthStateRegistering extends AuthState {
 
   const AuthStateRegistering({required this.exception, required bool isLoading})
       : super(isLoading: isLoading);
+}
+
+// * Tästäkin classista voi olla useampi stateja joten
+// * täytyy miettiä mitä voidaan lähettää ohjelmalle
+class AuthStateForgotPassword extends AuthState {
+  final Exception? exception;
+  final bool hasSentEmail;
+
+  const AuthStateForgotPassword({
+    required this.exception,
+    required this.hasSentEmail,
+    required bool isLoading,
+  }) : super(isLoading: isLoading);
 }

@@ -169,6 +169,11 @@ class MockAuthProvider implements AuthProvider {
       password: password,
     );
   }
+
+  @override
+  Future<void> sendPasswordReset({required String toEmail}) {
+    throw UnimplementedError();
+  }
 }
 
 const templateEmail = "foo@bar.baz";

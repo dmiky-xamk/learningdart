@@ -67,13 +67,18 @@ class _LoginViewState extends State<LoginView> {
     context.read<AuthBloc>().add(const AuthEventShouldRegister());
   }
 
+  void navToForgotYourPasswordView() {
+    context.read<AuthBloc>().add(AuthEventForgotPassword(email: _email.text));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateSignedOut) {
           if (state.exception is UserNotFoundAuthException) {
-            await showErrorDialogWrapper("User not found");
+            await showErrorDialogWrapper(
+                "Cannot find a user with the entered credentials.");
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialogWrapper("Wrong credentials");
           } else if (state.exception is GenericAuthException) {
@@ -83,31 +88,40 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         appBar: AppBar(title: const Text("Sign in")),
-        body: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(hintText: "Email"),
-              autocorrect: false,
-              enableSuggestions: false,
-              keyboardType: TextInputType.emailAddress,
-              controller: _email,
-            ),
-            TextField(
-              decoration: const InputDecoration(hintText: "Password"),
-              obscureText: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              controller: _password,
-            ),
-            TextButton(
-              onPressed: signInUser,
-              child: const Text("Sign in"),
-            ),
-            TextButton(
-              onPressed: navToRegisterView,
-              child: const Text("Don't have an account yet? Sign up."),
-            )
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const Text(
+                  "Please sign in to your account in order to interact with and create notes!"),
+              TextField(
+                decoration: const InputDecoration(hintText: "Email"),
+                autocorrect: false,
+                enableSuggestions: false,
+                keyboardType: TextInputType.emailAddress,
+                controller: _email,
+              ),
+              TextField(
+                decoration: const InputDecoration(hintText: "Password"),
+                obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                controller: _password,
+              ),
+              TextButton(
+                onPressed: signInUser,
+                child: const Text("Sign in"),
+              ),
+              TextButton(
+                onPressed: navToRegisterView,
+                child: const Text("Don't have an account yet? Sign up."),
+              ),
+              TextButton(
+                onPressed: navToForgotYourPasswordView,
+                child: const Text("Forgot your password?"),
+              )
+            ],
+          ),
         ),
       ),
     );

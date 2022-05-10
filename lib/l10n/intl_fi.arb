@@ -1,0 +1,62 @@
+{
+    "logout_button": "Kirjaudu ulos",
+    "note": "Muistiinpano",
+    "cancel": "Peruuta",
+    "yes": "Kyllä",
+    "delete": "Poista",
+    "sharing": "Jaa",
+    "ok": "OK",
+    "login": "Kirjaudu sisään",
+    "verify_email": "Varmista sähköpostisi",
+    "register": "Rekisteröidy",
+    "restart": "Käynnistä uudelleen",
+
+    "start_typing_your_note": "Kirjoita muistiinpanosi",
+    "delete_note_prompt": "Haluatko varmasti poistaa tämän muistiinpanon?",
+    "cannot_share_empty_note_prompt": "Tyhjää muistiinpanoa ei voi jakaa!",
+    "generic_error_prompt": "Tapahtui virhe",
+    "logout_dialog_prompt": "Haluatko varmasti kirjautua ulos?",
+
+    "bloc_login_loading_message": "Ole hyvä ja odota hetki, kirjaamme sinua sisään",
+
+    "password_reset": "Palauta salasanasi",
+    "password_reset_dialog_prompt": "Olemme lähettäneet sinulle linkin salasanan palauttamista varten. Tarkista sähköpostisi viestiä varten.",
+
+    "login_error_cannot_find_user": "Käyttäjää ei löydy annetuilla tiedoilla!",
+    "login_error_wrong_credentials": "Väärät kirjautumistiedot",
+    "login_error_auth_error": "Virhe tunnistautumisen kanssa",
+
+    "login_view_prompt": "Ole hyvä ja kirjaudu sisään tunnuksellesi hallinoidaksesi ja luodaksesi muistiinpanoja!",
+    
+    "login_view_forgot_password": "Unohdin salasanani",
+    "login_view_not_registered_yet": "Eikö sinulla ole vielä tunnusta? Rekisteröidy täällä!",
+
+    "email_text_field_placeholder": "Sähköpostiosoite",
+    "password_text_field_placeholder": "Salasana",
+    
+    "forgot_password": "Salasanan palauttaminen",
+    "forgot_password_view_generic_error": "Valitettavasti pyyntöäsi ei voitu täyttää. Varmistathan sinulla olevan aktiivisen tunnuksen palvelussamme.",
+    "forgot_password_view_prompt": "Jos unohdit salasanasi, syötä tunnuksesi sähköpostiosoite alas ja lähetämme sinulle linkin salasanan palauttamista varten.",
+    "forgot_password_view_send_me_link": "Palauta salasana",
+    "forgot_password_view_back_to_login": "Takaisin kirjautumisnäkymään",
+
+    "register_error_weak_password": "Ole hyvä ja valitse vahvempi salasana.",
+    "register_error_email_already_in_use": "Tämä sähköpostiosoite on jo käytössä.",
+    "register_error_generic": "Rekisteröityminen epäonnistui. Ole hyvä ja yritä myöhemmin uudelleen.",
+    "register_error_invalid_email": "Antamasi sähköpostiosoite on virheellinen.",
+    "register_view_prompt": "Syötä sähköpostiosoitteesi sekä salasanasi nähdäksesi muistiinpanosi.",
+    "register_view_already_registered": "Aiempi käyttäjätunnus? Kirjaudu sisään täällä!",
+
+    "verify_email_view_prompt": "Olemme lähettäneet varmistusviestin sähköpostiisi. Ole hyvä ja avaa se varmistaaksesi tunnuksesi. Jos et ole vielä saanut varmistusviestiä, ole hyvä ja paina alla olevaa nappia!",
+    "verify_email_send_email_verification": "Lähetä varmistusviesti",
+
+    "notes_title": "{count, plural, =0{Ei muistiinpanoja} =1{1 muistiinpano} other{{count} muistiinpanoa}}",
+    "@notes_title": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3 muistiinpanoa"
+            }
+        }
+    }
+}

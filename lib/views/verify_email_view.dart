@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learningdart/extensions/buildcontext/loc.dart';
 import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
 
@@ -10,7 +11,7 @@ class VerifyEmailView extends StatefulWidget {
   State<VerifyEmailView> createState() => _VerifyEmailViewState();
 }
 
-void signOutAndReset(context) async {
+void signOutAndReset(BuildContext context) async {
   context.read<AuthBloc>().add(
         const AuthEventSignOut(),
       );
@@ -21,28 +22,32 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Verify email"),
+        title: Text(
+          context.loc.verify_email,
+        ),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-                "We've sent you a verification email. Please open it to verify your account."),
-            const Text(
-                "If you haven't received a verification email yet, press the button below."),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(context.loc.verify_email_view_prompt),
+            ),
             TextButton(
               onPressed: () {
                 context.read<AuthBloc>().add(
                       const AuthEventSendEmailVerification(),
                     );
-                // await AuthService.firebase().sendEmailVerification();
               },
-              child: const Text("Resend verification email"),
+              child: Text(
+                context.loc.verify_email_send_email_verification,
+              ),
             ),
             TextButton(
               onPressed: () => signOutAndReset(context),
-              child: const Text("Register using another email"),
+              child: Text(
+                context.loc.restart,
+              ),
             ),
           ],
         ),

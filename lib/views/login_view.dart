@@ -1,13 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learningdart/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/services/auth/bloc/auth_state.dart';
 import 'package:learningdart/utilities/dialogs/error_dialog.dart';
-import 'package:learningdart/utilities/dialogs/loading_dialog.dart';
+import 'package:learningdart/services/auth/auth_exceptions.dart';
+import 'package:learningdart/extensions/buildcontext/loc.dart';
 
 import '../services/auth/bloc/auth_bloc.dart';
-import 'package:learningdart/services/auth/auth_exceptions.dart';
 
 // * Kirjautumisnäkymä
 class LoginView extends StatefulWidget {
@@ -78,31 +77,40 @@ class _LoginViewState extends State<LoginView> {
         if (state is AuthStateSignedOut) {
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialogWrapper(
-                "Cannot find a user with the entered credentials.");
+                context.loc.login_error_cannot_find_user);
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialogWrapper("Wrong credentials");
+            await showErrorDialogWrapper(
+                context.loc.login_error_wrong_credentials);
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialogWrapper("Authentication error");
+            await showErrorDialogWrapper(context.loc.login_error_auth_error);
           }
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text("Sign in")),
+        appBar: AppBar(
+            // title: const Text("Sign in"),
+            // title: Text(AppLocalizations.of(context)!.my_title)),
+            title: Text(context.loc.login)),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text(
-                  "Please sign in to your account in order to interact with and create notes!"),
+              Text(
+                context.loc.login_view_prompt,
+              ),
               TextField(
-                decoration: const InputDecoration(hintText: "Email"),
+                decoration: InputDecoration(
+                  hintText: context.loc.email_text_field_placeholder,
+                ),
                 autocorrect: false,
                 enableSuggestions: false,
                 keyboardType: TextInputType.emailAddress,
                 controller: _email,
               ),
               TextField(
-                decoration: const InputDecoration(hintText: "Password"),
+                decoration: InputDecoration(
+                  hintText: context.loc.password_text_field_placeholder,
+                ),
                 obscureText: true,
                 autocorrect: false,
                 enableSuggestions: false,
@@ -110,15 +118,19 @@ class _LoginViewState extends State<LoginView> {
               ),
               TextButton(
                 onPressed: signInUser,
-                child: const Text("Sign in"),
+                child: Text(context.loc.login),
               ),
               TextButton(
                 onPressed: navToRegisterView,
-                child: const Text("Don't have an account yet? Sign up."),
+                child: Text(
+                  context.loc.login_view_not_registered_yet,
+                ),
               ),
               TextButton(
                 onPressed: navToForgotYourPasswordView,
-                child: const Text("Forgot your password?"),
+                child: Text(
+                  context.loc.login_view_forgot_password,
+                ),
               )
             ],
           ),

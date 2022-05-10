@@ -1,5 +1,6 @@
 // * Pää widget kirjautuneille asiakkaille
 import 'package:flutter/material.dart';
+import 'package:learningdart/extensions/buildcontext/loc.dart';
 import 'package:learningdart/services/auth/bloc/auth_bloc.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/services/cloud/cloud_note.dart';
@@ -8,6 +9,7 @@ import 'package:learningdart/utilities/dialogs/signout_dialog.dart';
 import 'package:learningdart/views/notes/notes_list_view.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
+import 'package:learningdart/extensions/stream/count.dart';
 
 import '../../constants/routes.dart';
 import '../../enums/menu_action.dart';
@@ -53,7 +55,19 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Notes"),
+        title: StreamBuilder<int>(
+          stream: _notesService.allNotes(ownerUserId: userId).getLength,
+          builder: (context, AsyncSnapshot<int> snapshot) {
+            if (snapshot.hasData) {
+              final noteCount = snapshot.data ?? 0;
+              final text = context.loc.notes_title(noteCount);
+
+              return Text(text);
+            } else {
+              return const Text("");
+            }
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () =>
@@ -63,10 +77,10 @@ class _NotesViewState extends State<NotesView> {
           PopupMenuButton<MenuAction>(
             onSelected: (value) => handleMenuAction(value, context),
             itemBuilder: (context) {
-              return const [
+              return [
                 PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
-                  child: Text("Sign out"),
+                  child: Text(context.loc.logout_button),
                 )
               ];
             },

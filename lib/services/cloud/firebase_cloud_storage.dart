@@ -38,10 +38,14 @@ class FirebaseCloudStorage {
   // * .snapshots() lukee noteja reaaliaikasesti (see all the changes as they are happening)
   // * Streamin sisällä on dokumentit, joista tehdään oma CloudNote instance
   // * jos noten omistajan ID on sama kuin käyttäjän ID
-  Stream<Iterable<CloudNote>> allNotes({required String ownerUserId}) =>
-      notes.snapshots().map((event) => event.docs
-          .map((doc) => CloudNote.fromSnapshot(doc))
-          .where((note) => note.ownerUserId == ownerUserId));
+  Stream<Iterable<CloudNote>> allNotes({required String ownerUserId}) {
+    final allNotes = notes
+        .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+        .snapshots()
+        .map((event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)));
+
+    return allNotes;
+  }
 
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
     final document = await notes.add({
@@ -56,22 +60,6 @@ class FirebaseCloudStorage {
       ownerUserId: ownerUserId,
       text: "",
     );
-  }
-
-  Future<Iterable<CloudNote>> fetchNotes({required String ownerUserId}) async {
-    try {
-      return await notes
-          .where(
-            ownerUserIdFieldName,
-            isEqualTo: ownerUserId,
-          )
-          .get()
-          .then(
-            (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
-          );
-    } catch (_) {
-      throw CouldNotGetAllNotesException();
-    }
   }
 
   // * Kutsuu private constructoria

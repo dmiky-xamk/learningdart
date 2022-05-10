@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/extensions/buildcontext/loc.dart';
 import 'package:learningdart/services/auth/auth_exceptions.dart';
 import 'package:learningdart/services/auth/bloc/auth_event.dart';
 import 'package:learningdart/utilities/dialogs/error_dialog.dart';
@@ -43,35 +44,36 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(
               context,
-              "The email you entered was invalid.",
+              context.loc.register_error_invalid_email,
             );
           } else if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
               context,
-              "No user was found with this email.",
+              context.loc.login_error_cannot_find_user,
             );
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
-                context, "There was a problem sending the email.");
+                context, context.loc.forgot_password_view_generic_error);
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Forgot Password"),
+          title: Text(context.loc.forgot_password),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text(
-                "If you forgot your password, please enter your email address below and we will send you a new one.",
+              Text(
+                context.loc.forgot_password_view_prompt,
               ),
               TextField(
                 autocorrect: false,
                 autofocus: true,
                 controller: _email,
-                decoration: const InputDecoration(hintText: "Email"),
+                decoration: InputDecoration(
+                    hintText: context.loc.email_text_field_placeholder),
                 keyboardType: TextInputType.emailAddress,
               ),
               TextButton(
@@ -81,7 +83,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       .read<AuthBloc>()
                       .add(AuthEventForgotPassword(email: email));
                 },
-                child: const Text("Reset password"),
+                child: Text(context.loc.forgot_password_view_send_me_link),
               ),
               TextButton(
                 onPressed: () {
@@ -89,7 +91,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         const AuthEventSignOut(),
                       );
                 },
-                child: const Text("Back to the login page"),
+                child: Text(context.loc.forgot_password_view_back_to_login),
               )
             ],
           ),

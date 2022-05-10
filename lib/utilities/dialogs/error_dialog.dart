@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learningdart/extensions/buildcontext/loc.dart';
 import 'generic_dialog.dart';
 
 // * Näyttää virheilmoituksen -> nappi pelkkä ok -> sillä ei ole arvoa
@@ -8,10 +9,10 @@ Future<void> showErrorDialog(
 ) {
   return showGenericDialog<void>(
     context: context,
-    title: "An error occured",
+    title: context.loc.generic_error_prompt,
     content: text,
     optionsBuilder: () => {
-      "OK": null,
+      context.loc.ok: null,
     },
   );
 }
